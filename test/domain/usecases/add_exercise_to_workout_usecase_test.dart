@@ -66,5 +66,23 @@ void main() {
       );
       expect(editedWorkout.excercises.length, greaterThan(startingLength));
     });
+
+    test('Should remove an exercise from the workout', () async {
+      int startingLength = mockWorkout.excercises.length;
+      when(() => mockWorkoutRepository.removeExerciseFromWorkout(
+            mockWorkout,
+            mockExercise1,
+          )).thenAnswer((_) async => mockWorkout.copyWith(
+            excercises: mockWorkout.excercises
+                .where((exercise) => exercise != mockExercise1)
+                .toList(),
+          ));
+      WorkoutEntity editedWorkout = await sut(
+        workout: mockWorkout,
+        typeOfEdit: TypeOfEdit.removeExercise,
+        exercise: mockExercise1,
+      );
+      expect(editedWorkout.excercises.length, lessThan(startingLength));
+    });
   });
 }
